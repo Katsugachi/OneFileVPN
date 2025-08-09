@@ -1,0 +1,147 @@
+<html>
+<head>
+<hta:application id="OneFileVPN" applicationname="OneFileVPN" border="thin" caption="yes" showintaskbar="yes" sysmenu="yes" scroll="no" singleinstance="yes" windowstate="normal"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>OneFile VPN</title>
+<style>
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:#0f1222;color:#e7e9f3;font-family:Segoe UI,Arial,Helvetica,sans-serif}
+.wrapper{display:flex;align-items:center;justify-content:center;height:100%;padding:24px}
+.card{width:880px;max-width:100%;background:#141936;border:1px solid rgba(255,255,255,.08);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04)}
+.header{padding:28px 28px 8px}
+.title{font-size:22px;font-weight:600;letter-spacing:.3px}
+.subtitle{opacity:.7;font-size:12.5px;margin-top:6px}
+.content{display:flex;gap:20px;padding:20px;flex-wrap:wrap}
+.left,.right{flex:1 1 380px;min-width:320px}
+.section{background:#0f1430;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px}
+.section h3{margin:0 0 12px 0;font-size:14px;font-weight:600;letter-spacing:.4px;opacity:.9}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.field{flex:1 1 180px;min-width:160px;display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.label{font-size:12px;opacity:.8}
+.input{appearance:none;background:#0b1028;color:#e7e9f3;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;font-size:13px;outline:none}
+.input:focus{border-color:#6ea8fe;box-shadow:0 0 0 3px rgba(110,168,254,.15)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.btn{appearance:none;border:0;border-radius:10px;padding:10px 14px;font-weight:600;letter-spacing:.2px;cursor:pointer;font-size:13px}
+.primary{background:linear-gradient(135deg,#4f8cff,#7a5cff);color:#fff}
+.secondary{background:#1c2246;color:#e7e9f3;border:1px solid rgba(255,255,255,.08)}
+.danger{background:#ff4d6d;color:#fff}
+.neutral{background:#2a315e;color:#e7e9f3}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.status{display:flex;align-items:center;gap:10px;margin-top:10px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:#10163a;border:1px solid rgba(255,255,255,.06);color:#cfd6ff;border-radius:999px;padding:8px 12px;font-size:12px}
+.dot{width:10px;height:10px;border-radius:50%;background:#8a8f9e;box-shadow:0 0 0 3px rgba(138,143,158,.15) inset}
+.dot.ok{background:#2bd576;box-shadow:0 0 0 3px rgba(43,213,118,.15) inset}
+.dot.warn{background:#ffb020;box-shadow:0 0 0 3px rgba(255,176,32,.15) inset}
+.dot.err{background:#ff4d6d;box-shadow:0 0 0 3px rgba(255,77,109,.15) inset}
+.kv{display:grid;grid-template-columns:160px 1fr;gap:6px 10px;font-size:12.5px;margin-top:8px}
+.kv div{padding:6px 10px;border-radius:8px;background:#0b1028;border:1px solid rgba(255,255,255,.05)}
+.log{height:220px;background:#0b1028;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px;overflow:auto;font-family:Consolas,Menlo,monospace;font-size:12px;line-height:1.4;color:#c9d3ff}
+.footer{display:flex;justify-content:space-between;align-items:center;padding:8px 20px 20px}
+.hint{opacity:.6;font-size:12px}
+.switch{display:inline-flex;align-items:center;gap:10px}
+.toggle{position:relative;width:44px;height:24px;background:#23274d;border-radius:999px;border:1px solid rgba(255,255,255,.08);cursor:pointer}
+.toggle i{position:absolute;top:2px;left:2px;width:20px;height:20px;background:#e7e9f3;border-radius:50%;transition:left .15s ease}
+.toggle.on{background:#4f8cff}
+.toggle.on i{left:22px}
+</style>
+<script language="JScript">
+var sh=new ActiveXObject("WScript.Shell");var fso=new ActiveXObject("Scripting.FileSystemObject");var elevated=false;function ensureAdmin(){var r=sh.Run('cmd /c net session >nul 2>&1',0,true);if(r!=0){try{new ActiveXObject("Shell.Application").ShellExecute("mshta.exe",'"'+unescape(document.location.pathname)+'"',"","runas",1);window.close()}catch(e){}}else{elevated=true}}
+function exec(cmd){var e=sh.Exec('cmd /c '+cmd);var o="";var ee="";while(!e.StdOut.AtEndOfStream){o+=e.StdOut.ReadAll()}while(!e.StdErr.AtEndOfStream){ee+=e.StdErr.ReadAll()}return {code:e.Status,stdout:o,stderr:ee}}
+function ps(q){var c='powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command "'+q.replace(/"/g,'\\"')+'"';return exec(c)}
+function val(id){return document.getElementById(id).value}
+function set(id,v){document.getElementById(id).innerText=v}
+function setv(id,v){document.getElementById(id).value=v}
+function on(id,fn){document.getElementById(id).onclick=fn}
+function log(t){var el=document.getElementById("log");var d=new Date();el.innerText+="["+d.toLocaleTimeString()+"] "+t+"\n";el.scrollTop=el.scrollHeight}
+function badge(state,text){var dot=document.getElementById("dot");dot.className="dot "+state;set("stateText",text)}
+function disable(b){for(var i=0;i<b.length;i++){document.getElementById(b[i]).disabled=true}}
+function enable(b){for(var i=0;i<b.length;i++){document.getElementById(b[i]).disabled=false}}
+function exists(name){var r=ps("(Get-VpnConnection -Name '"+name+"' -ErrorAction SilentlyContinue) -ne $null");return r.stdout.replace(/\s/g,"").toLowerCase()=="true"}
+function status(name){var r=ps("(Get-VpnConnection -Name '"+name+"' -ErrorAction SilentlyContinue).ConnectionStatus");var s=r.stdout.replace(/\r?\n/g,"").trim();if(!s)s="Unknown";return s}
+function createProfile(){var name=val("name"),server=val("server"),psk=val("psk"),split=document.getElementById("split").getAttribute("data-on")=="1"?"$true":"$false";if(!name||!server||!psk){log("Missing required fields");return}disable(["create","connect","disconnect","delete"]);badge("warn","Creating");log("Creating VPN profile");var cmd="$ErrorActionPreference='Stop'; if(Get-VpnConnection -Name '"+name+"' -ErrorAction SilentlyContinue){Remove-VpnConnection -Name '"+name+"' -Force}; Add-VpnConnection -Name '"+name+"' -ServerAddress '"+server+"' -TunnelType L2tp -L2tpPsk '"+psk+"' -AuthenticationMethod Pap,Chap,MSChapv2 -EncryptionLevel Maximum -SplitTunneling "+split+" -Force -PassThru | Out-String";var r=ps(cmd);if(r.stderr&&r.stderr.trim().length>0){log(r.stderr)}if(r.stdout&&r.stdout.trim().length>0){log(r.stdout)}if(exists(name)){badge("ok","Profile ready")}else{badge("err","Create failed")}enable(["create","connect","disconnect","delete"]);updateInfo()}
+function setCreds(){var name=val("name"),user=val("user"),pw=val("pw");if(!name||!user||!pw){return}var r=ps("$ErrorActionPreference='Stop'; Set-VpnConnectionUsernamePassword -ConnectionName '"+name+"' -Username '"+user+"' -Password '"+pw+"' -Force; 'ok'");if(r.stdout.indexOf("ok")>=0){log("Credentials saved")}else{log("Credentials set may have failed; continuing")}
+function connectVPN(){var name=val("name"),user=val("user"),pw=val("pw");if(!name||!user||!pw){log("Missing credentials");return}disable(["create","connect","delete"]);badge("warn","Connecting");setCreds();log("Dialing "+name);var r=exec('rasdial "'+name.replace(/"/g,'""')+'" "'+user.replace(/"/g,'""')+'" "'+pw.replace(/"/g,'""')+'"');if(r.stdout.trim().length>0)log(r.stdout);if(r.stderr.trim().length>0)log(r.stderr);var s=status(name);if(s.toLowerCase().indexOf("connected")>=0){badge("ok","Connected")}else{badge("err","Not connected")}enable(["create","connect","delete"]);updateInfo()}
+function disconnectVPN(){var name=val("name");if(!name){return}disable(["disconnect"]);badge("warn","Disconnecting");log("Disconnecting "+name);var r=exec('rasdial "'+name.replace(/"/g,'""')+'" /disconnect');if(r.stdout.trim().length>0)log(r.stdout);if(r.stderr.trim().length>0)log(r.stderr);var s=status(name);if(s.toLowerCase().indexOf("connected")>=0){badge("warn","Disconnect may have failed")}else{badge("ok","Disconnected")}enable(["disconnect"]);updateInfo()}
+function deleteVPN(){var name=val("name");if(!name){return}disable(["delete"]);badge("warn","Removing");log("Removing profile "+name);disconnectVPN();var r=ps("Remove-VpnConnection -Name '"+name+"' -Force -ErrorAction SilentlyContinue; 'ok'");if(r.stdout.indexOf("ok")>=0){badge("ok","Removed")}else{badge("err","Remove failed")}enable(["delete"]);updateInfo()}
+function updateInfo(){var name=val("name");var s=status(name);set("inf_name",name||"-");set("inf_status",s);var r1=ps("(Get-VpnConnection -Name '"+name+"' -ErrorAction SilentlyContinue).ServerAddress");var r2=ps("(Get-VpnConnection -Name '"+name+"' -ErrorAction SilentlyContinue).SplitTunneling");var r3=ps("(Get-VpnConnection -Name '"+name+"' -ErrorAction SilentlyContinue).TunnelType");set("inf_server",r1.stdout.replace(/\r?\n/g,"").trim()||"-");set("inf_split",(r2.stdout.replace(/\r?\n/g,"").trim()||"-"));set("inf_tunnel",r3.stdout.replace(/\r?\n/g,"").trim()||"-")}
+function toggleSplit(){var t=document.getElementById("split");var on=t.getAttribute("data-on")=="1";if(on){t.setAttribute("data-on","0");t.className="toggle";}else{t.setAttribute("data-on","1");t.className="toggle on";}}
+window.onload=function(){ensureAdmin();on("create",createProfile);on("connect",connectVPN);on("disconnect",disconnectVPN);on("delete",deleteVPN);on("split",toggleSplit);updateInfo();log("Ready")}
+</script>
+</head>
+<body>
+<div class="wrapper">
+  <div class="card">
+    <div class="header">
+      <div class="title">OneFile VPN</div>
+      <div class="subtitle">Single-file L2TP/IPsec client for Windows. Create, connect, and manage in one place.</div>
+    </div>
+    <div class="content">
+      <div class="left">
+        <div class="section">
+          <h3>Connection</h3>
+          <div class="row">
+            <div class="field">
+              <div class="label">Connection name</div>
+              <input id="name" class="input" value="OneFileVPN">
+            </div>
+            <div class="field">
+              <div class="label">Server address</div>
+              <input id="server" class="input" placeholder="vpn.example.com or IP">
+            </div>
+            <div class="field">
+              <div class="label">Pre-shared key (IPsec)</div>
+              <input id="psk" type="password" class="input" placeholder="PSK">
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <div class="label">Username</div>
+              <input id="user" class="input" placeholder="username">
+            </div>
+            <div class="field">
+              <div class="label">Password</div>
+              <input id="pw" type="password" class="input" placeholder="password">
+            </div>
+            <div class="field">
+              <div class="label">Split tunneling</div>
+              <div class="switch">
+                <div id="split" class="toggle" data-on="0"><i></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="create" class="btn primary">Create/Update</button>
+            <button id="connect" class="btn secondary">Connect</button>
+            <button id="disconnect" class="btn neutral">Disconnect</button>
+            <button id="delete" class="btn danger">Delete</button>
+          </div>
+          <div class="status">
+            <span class="badge"><span id="dot" class="dot"></span><span id="stateText">Idle</span></span>
+          </div>
+        </div>
+        <div class="section" style="margin-top:14px">
+          <h3>Details</h3>
+          <div class="kv">
+            <div>Name</div><div id="inf_name">-</div>
+            <div>Status</div><div id="inf_status">Unknown</div>
+            <div>Server</div><div id="inf_server">-</div>
+            <div>Tunnel</div><div id="inf_tunnel">-</div>
+            <div>Split tunneling</div><div id="inf_split">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="section" style="height:100%">
+          <h3>Activity</h3>
+          <div id="log" class="log"></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="hint">Requires Windows with administrator approval to create the VPN profile.</div>
+      <div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
