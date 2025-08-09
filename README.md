@@ -1,2 +1,3 @@
 # OneFileVPN
-Technically I'm not sure if this works. I just kinda made it.
+Technically I'm not sure if this works. I just kinda made it.  
+https://katsugachi.github.io/OneFileVPN/
