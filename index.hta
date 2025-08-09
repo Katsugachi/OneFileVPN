@@ -5,44 +5,50 @@
 <meta charset="utf-8">
 <title>OneFile VPN</title>
 <style>
-*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:#0f1222;color:#e7e9f3;font-family:Segoe UI,Arial,Helvetica,sans-serif}
-.wrapper{display:flex;align-items:center;justify-content:center;height:100%;padding:24px}
-.card{width:880px;max-width:100%;background:#141936;border:1px solid rgba(255,255,255,.08);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04)}
-.header{padding:28px 28px 8px}
-.title{font-size:22px;font-weight:600;letter-spacing:.3px}
-.subtitle{opacity:.7;font-size:12.5px;margin-top:6px}
-.content{display:flex;gap:20px;padding:20px;flex-wrap:wrap}
-.left,.right{flex:1 1 380px;min-width:320px}
-.section{background:#0f1430;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px}
-.section h3{margin:0 0 12px 0;font-size:14px;font-weight:600;letter-spacing:.4px;opacity:.9}
-.row{display:flex;gap:12px;flex-wrap:wrap}
-.field{flex:1 1 180px;min-width:160px;display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-.label{font-size:12px;opacity:.8}
-.input{appearance:none;background:#0b1028;color:#e7e9f3;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;font-size:13px;outline:none}
-.input:focus{border-color:#6ea8fe;box-shadow:0 0 0 3px rgba(110,168,254,.15)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-.btn{appearance:none;border:0;border-radius:10px;padding:10px 14px;font-weight:600;letter-spacing:.2px;cursor:pointer;font-size:13px}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:#0b0f23;color:#e7e9f3;font-family:Segoe UI,Arial,Helvetica,sans-serif;font-size:14.5px}
+.wrapper{height:100vh;width:100vw}
+.card{display:flex;flex-direction:column;width:100vw;height:100vh;background:#121737;border-top:1px solid rgba(255,255,255,.06);border-left:1px solid rgba(255,255,255,.04);box-shadow:0 20px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.03)}
+.header{padding:28px 32px 10px}
+.title{font-size:28px;font-weight:700;letter-spacing:.2px}
+.subtitle{opacity:.75;font-size:13px;margin-top:6px}
+.content{flex:1;min-height:0;display:grid;grid-template-columns:1.15fr .85fr;gap:24px;padding:22px 24px 18px}
+.left,.right{min-width:0;min-height:0}
+.section{background:#0e1434;border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px}
+.section h3{margin:0 0 12px 0;font-size:15px;font-weight:700;letter-spacing:.3px;opacity:.92}
+.row{display:flex;gap:14px;flex-wrap:wrap}
+.field{flex:1 1 240px;min-width:200px;display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.label{font-size:12.5px;opacity:.8}
+.input{appearance:none;background:#0a102b;color:#e7e9f3;border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:12px 14px;font-size:14px;outline:none;transition:.15s border, .15s box-shadow}
+.input:focus{border-color:#6ea8fe;box-shadow:0 0 0 4px rgba(110,168,254,.16)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.btn{appearance:none;border:0;border-radius:12px;padding:12px 16px;font-weight:700;letter-spacing:.2px;cursor:pointer;font-size:14px}
 .primary{background:linear-gradient(135deg,#4f8cff,#7a5cff);color:#fff}
-.secondary{background:#1c2246;color:#e7e9f3;border:1px solid rgba(255,255,255,.08)}
+.secondary{background:#1b2148;color:#e7e9f3;border:1px solid rgba(255,255,255,.08)}
 .danger{background:#ff4d6d;color:#fff}
 .neutral{background:#2a315e;color:#e7e9f3}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.status{display:flex;align-items:center;gap:10px;margin-top:10px}
-.badge{display:inline-flex;align-items:center;gap:8px;background:#10163a;border:1px solid rgba(255,255,255,.06);color:#cfd6ff;border-radius:999px;padding:8px 12px;font-size:12px}
-.dot{width:10px;height:10px;border-radius:50%;background:#8a8f9e;box-shadow:0 0 0 3px rgba(138,143,158,.15) inset}
-.dot.ok{background:#2bd576;box-shadow:0 0 0 3px rgba(43,213,118,.15) inset}
-.dot.warn{background:#ffb020;box-shadow:0 0 0 3px rgba(255,176,32,.15) inset}
-.dot.err{background:#ff4d6d;box-shadow:0 0 0 3px rgba(255,77,109,.15) inset}
-.kv{display:grid;grid-template-columns:160px 1fr;gap:6px 10px;font-size:12.5px;margin-top:8px}
-.kv div{padding:6px 10px;border-radius:8px;background:#0b1028;border:1px solid rgba(255,255,255,.05)}
-.log{height:220px;background:#0b1028;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px;overflow:auto;font-family:Consolas,Menlo,monospace;font-size:12px;line-height:1.4;color:#c9d3ff}
-.footer{display:flex;justify-content:space-between;align-items:center;padding:8px 20px 20px}
-.hint{opacity:.6;font-size:12px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.status{display:flex;align-items:center;gap:12px;margin-top:12px}
+.badge{display:inline-flex;align-items:center;gap:10px;background:#0f1640;border:1px solid rgba(255,255,255,.08);color:#d6dcff;border-radius:999px;padding:9px 14px;font-size:12.5px}
+.dot{width:11px;height:11px;border-radius:50%;background:#8a8f9e;box-shadow:0 0 0 3px rgba(138,143,158,.15) inset}
+.dot.ok{background:#2bd576;box-shadow:0 0 0 3px rgba(43,213,118,.18) inset}
+.dot.warn{background:#ffb020;box-shadow:0 0 0 3px rgba(255,176,32,.18) inset}
+.dot.err{background:#ff4d6d;box-shadow:0 0 0 3px rgba(255,77,109,.18) inset}
+.kv{display:grid;grid-template-columns:200px 1fr;gap:8px 12px;font-size:13px;margin-top:8px}
+.kv div{padding:10px 12px;border-radius:10px;background:#0a102b;border:1px solid rgba(255,255,255,.07);min-width:0}
+.right .section{display:flex;flex-direction:column;min-height:0;height:100%}
+.log{flex:1;min-height:0;background:#0a102b;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;overflow:auto;font-family:Consolas,Menlo,monospace;font-size:12.5px;line-height:1.5;color:#c9d3ff}
+.footer{display:flex;justify-content:space-between;align-items:center;padding:8px 24px 20px}
+.hint{opacity:.65;font-size:12.5px}
 .switch{display:inline-flex;align-items:center;gap:10px}
-.toggle{position:relative;width:44px;height:24px;background:#23274d;border-radius:999px;border:1px solid rgba(255,255,255,.08);cursor:pointer}
-.toggle i{position:absolute;top:2px;left:2px;width:20px;height:20px;background:#e7e9f3;border-radius:50%;transition:left .15s ease}
+.toggle{position:relative;width:54px;height:28px;background:#23274d;border-radius:999px;border:1px solid rgba(255,255,255,.10);cursor:pointer;transition:.15s background}
+.toggle i{position:absolute;top:3px;left:3px;width:22px;height:22px;background:#e7e9f3;border-radius:50%;transition:left .15s ease}
 .toggle.on{background:#4f8cff}
-.toggle.on i{left:22px}
+.toggle.on i{left:29px}
+@media (max-width:1100px){
+  .content{grid-template-columns:1fr}
+}
 </style>
 <script language="JScript">
 var sh=new ActiveXObject("WScript.Shell");var fso=new ActiveXObject("Scripting.FileSystemObject");var elevated=false;function ensureAdmin(){var r=sh.Run('cmd /c net session >nul 2>&1',0,true);if(r!=0){try{new ActiveXObject("Shell.Application").ShellExecute("mshta.exe",'"'+unescape(document.location.pathname)+'"',"","runas",1);window.close()}catch(e){}}else{elevated=true}}
@@ -119,7 +125,7 @@ window.onload=function(){ensureAdmin();on("create",createProfile);on("connect",c
             <span class="badge"><span id="dot" class="dot"></span><span id="stateText">Idle</span></span>
           </div>
         </div>
-        <div class="section" style="margin-top:14px">
+        <div class="section" style="margin-top:16px">
           <h3>Details</h3>
           <div class="kv">
             <div>Name</div><div id="inf_name">-</div>
